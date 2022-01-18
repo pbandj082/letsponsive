@@ -22,11 +22,17 @@ class Letsponsive extends StatefulWidget {
     Key? key,
     this.mobileMaxWidth,
     this.portraitMaxWidth,
+    this.mobileTextScaleFactor,
+    this.portraitTextScaleFactor,
+    this.landscapeTextScaleFactor,
     required this.child,
   }) : super(key: key);
 
   final double? mobileMaxWidth;
   final double? portraitMaxWidth;
+  final double? mobileTextScaleFactor;
+  final double? portraitTextScaleFactor;
+  final double? landscapeTextScaleFactor;
   final Widget child;
 
   static LetsponsiveOrientation of(BuildContext context) {
@@ -55,6 +61,17 @@ class _LetsponsiveState extends State<Letsponsive> {
     return LetsponsiveOrientation.mobile;
   }
 
+  double? get _textScaleFactor {
+    switch (_orientation) {
+      case LetsponsiveOrientation.landscape:
+        return widget.landscapeTextScaleFactor;
+      case LetsponsiveOrientation.portrait:
+        return widget.portraitTextScaleFactor;
+      case LetsponsiveOrientation.mobile:
+        return widget.mobileTextScaleFactor;
+    }
+  }
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -65,7 +82,10 @@ class _LetsponsiveState extends State<Letsponsive> {
   Widget build(BuildContext context) {
     return LetsponsiveScope(
       orientation: _orientation,
-      child: widget.child,
+      child: MediaQuery(
+        data: _media.copyWith(textScaleFactor: _textScaleFactor),
+        child: widget.child,
+      ),
     );
   }
 }
